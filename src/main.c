@@ -2,12 +2,12 @@
 #include <kv.h>
 
 int main() {
-    kv_t *table = kv_init(1024);
+    kv_t *table = kv_init(3);
     printf("%p\n", table);
 
     printf("%ld\n", table->capacity);
-    kv_put(table, "color", "red");
-    kv_put(table, "hehe", "hoho");
+    kv_put(table, "1", "red");
+    kv_put(table, "2", "hoho");
     kv_put(table, "lala", "hoho");
 
     for (int i = 0; i < table->capacity; i++) {
