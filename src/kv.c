@@ -86,6 +86,31 @@ char *kv_get(kv_t *db, char *key){
     return NULL;
 }
 
+// fn kv_free
+// params:
+// - db: a pointer to the db 
+// returns 0 on success, -1 on failure
+int kv_free(kv_t *db) {
+    if (!db) return -1;
+    
+    for (int i = 0; i < db->capacity - 1; i++) {
+        kv_entry_t *e = &db->entries[i];
+
+        if (e->key && e->key != TOMBSTONE) {
+            free(e->key);
+            free(e->value);
+            e->key = NULL;
+            e->value = NULL;
+            db->count--;
+        }
+    }
+
+    free(db->entries);
+    free(db);
+
+    return 0;
+}
+
 // fn kv_put
 // params:
 // - db: a pointer to the db 
@@ -111,6 +136,7 @@ int kv_put(kv_t *db, char *key, char *value){
             && !strcmp(entry->key, key)) {
             char *newval = strdup(value);
             if (!newval) return -1;
+            free(entry->value);
             entry->value = newval;
             return real_idx;
         }
